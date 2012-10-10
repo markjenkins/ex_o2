@@ -11,18 +11,19 @@
 
 from csv import DictReader
 from sys import argv
+from decimal import Decimal
 
 def gen_o2_stats_from_file(filename):
     with open(filename) as f:
         d = DictReader(f, )
         for line in d:
             try:
-                r = int(line[' Ch1rSO2'])
+                r = Decimal( int(line[' Ch1rSO2']) )
             except ValueError:
                 r = None
 
             try:
-                l = int(line[' Ch2rSO2'])
+                l = Decimal( int(line[' Ch2rSO2']) )
             except ValueError:
                 l = None
 

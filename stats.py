@@ -10,9 +10,9 @@
 from decimal import Decimal
 
 def average(iterable):
-    total = 0
-    count = 0
+    total = Decimal(0)
+    count = Decimal(0)
     for blah in iterable:
         total += blah
         count += 1
-    return Decimal(total) / Decimal(count)
+    return total / count
