@@ -19,8 +19,11 @@ from stats import average
 filename, start_row, end_row = argv[1], int(argv[2]), int(argv[3])
 
 
+(r_ave, l_ave) = tuple(
+    average( points[i]
+             for points in
+             gen_points_over_interval(filename, start_row, end_row)
+             if points[i] != None )
+    for i in range(1+1) )
 
-l_ave = average( points[1]
-                 for points in
-                 gen_points_over_interval(filename, start_row, end_row)
-                 if points[1] != None )
+print( r_ave, l_ave, average( (r_ave, l_ave) ) )
