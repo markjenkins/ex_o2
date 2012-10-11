@@ -18,16 +18,16 @@ def gen_o2_stats_from_file(filename):
         d = DictReader(f, )
         for line in d:
             try:
-                r = Decimal( int(line[' Ch1rSO2']) )
+                one = Decimal( int(line[' Ch1rSO2']) )
             except ValueError:
-                r = None
+                one = None
 
             try:
-                l = Decimal( int(line[' Ch2rSO2']) )
+                two = Decimal( int(line[' Ch2rSO2']) )
             except ValueError:
-                l = None
+                two = None
 
-            yield (r, l)
+            yield (one, two)
 
 def gen_points_after_interval(filename, start):
     return ( points

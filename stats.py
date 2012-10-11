@@ -12,7 +12,8 @@ from decimal import Decimal
 def average(iterable):
     total = Decimal(0)
     count = Decimal(0)
+    ONE = Decimal(1)
     for blah in iterable:
         total += blah
-        count += 1
+        count += ONE
     return total / count
