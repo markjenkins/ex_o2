@@ -19,7 +19,9 @@ from csv import DictWriter
 from ave_of_points import ave_over_interval
 from area_under_interval_with_threshold import \
     baseline_integrate_chan_after_time, \
-    baseline_integrate_avg_of_chans_after_time
+    baseline_integrate_avg_of_chans_after_time, \
+    gen_avg_pair_stream
+from o2_stat import gen_o2_stats_from_file
 
 FILE_PREFIX = 'CSVs'
 
@@ -41,6 +43,11 @@ DECIMAL_PLACES = 4
 
 CSV_FIELDNAMES = [
         'subject_id',
+
+        'data_point_count_OR',
+        'data_point_count_ICU',
+        'data_point_count_OR_useful',
+        'data_point_count_ICU_useful',
 
         'o2_both_chan_baseline',
         'o2_chan1_baseline',
@@ -169,6 +176,15 @@ def analyse_combo(baseline, baseline_type, channel, filename,
     return { field_prefix + '_TUB': time_under_baseline,
              field_prefix + '_AUB': area_under_baseline }
 
+def not_nones(iteration):
+    return ( value
+             for value in iteration
+             if value != None )
+
+def generator_len(iteration):
+    return sum( 1
+                for value in iteration )
+
 def analyse_subject(i, output_csv):
     or_file = join(FILE_PREFIX, '%s_OR.CSV' % i)
     if exists(or_file):
@@ -191,6 +207,16 @@ def analyse_subject(i, output_csv):
         'o2_chan1_baseline': o2_chan1_baseline,
         'o2_chan2_baseline': o2_chan2_baseline,
         'o2_both_chan_baseline': o2_both_chan_baseline,
+        'data_point_count_OR':
+            generator_len(gen_o2_stats_from_file(or_file)),
+        'data_point_count_ICU':
+            generator_len(gen_o2_stats_from_file(icu_file)),
+        'data_point_count_OR_useful':
+            generator_len(not_nones(gen_avg_pair_stream(gen_o2_stats_from_file(
+                        or_file)))),
+        'data_point_count_ICU_useful':
+            generator_len(not_nones(gen_avg_pair_stream(gen_o2_stats_from_file(
+                        icu_file)))),
         }
 
     for filename in (or_file, icu_file):

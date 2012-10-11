@@ -55,12 +55,12 @@ def baseline_integrate(iterable, baseline):
     return number_of_traps, sum_of_traps
 
 def gen_avg_pair_stream(iterable):
-    return (
-        pair[0] if pair[1] == None else (
-            pair[1] if pair[0] == None else average(pair) )
-        for pair  in iterable
-        if (None, None) != pair )
-        
+    for pair in iterable:
+        if (None, None) == pair:
+            yield None
+        else:
+            yield pair[0] if pair[1] == None else (
+                pair[1] if pair[0] == None else average(pair) )
 
 def baseline_integrate_avg_of_chans_after_time(
     filename, baseline, start):
