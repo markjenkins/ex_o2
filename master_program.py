@@ -37,7 +37,7 @@ O2_END = INTERVALS_PER_MINUTE * 3 - 1
  # 4/60 = 0.0666.. minutes
 INTERVAL_LENGTH = Decimal(SECONDS_PER_INTERVAL) / Decimal(SECONDS_PER_MINUTE)
 
-DECIMAL_PLACES = 3
+DECIMAL_PLACES = 4
 
 CSV_FIELDNAMES = [
         'subject_id',
@@ -73,6 +73,36 @@ CSV_FIELDNAMES = [
         'chan-avg_RA_ICU_TUB',
         'chan-avg_RA_OR_AUB',
         'chan-avg_RA_OR_TUB',
+
+        # adjusted averages
+        'chan-avg_RA_OR_<10_AUB',
+        'chan-avg_RA_OR_<10_TUB',
+        'chan-avg_RA_OR_<15_AUB',
+        'chan-avg_RA_OR_<15_TUB',
+        'chan-avg_RA_OR_<20_AUB',
+        'chan-avg_RA_OR_<20_TUB',
+
+        'chan-avg_RA_ICU_<10_AUB',
+        'chan-avg_RA_ICU_<10_TUB',
+        'chan-avg_RA_ICU_<15_AUB',
+        'chan-avg_RA_ICU_<15_TUB',
+        'chan-avg_RA_ICU_<20_AUB',
+        'chan-avg_RA_ICU_<20_TUB',
+
+        # absolute
+        'chan-avg_RA_OR_=60_AUB',
+        'chan-avg_RA_OR_=60_TUB',
+        'chan-avg_RA_OR_=55_AUB',
+        'chan-avg_RA_OR_=55_TUB',
+        'chan-avg_RA_OR_=50_AUB',
+        'chan-avg_RA_OR_=50_TUB',
+
+        'chan-avg_RA_ICU_=60_AUB',
+        'chan-avg_RA_ICU_=60_TUB',
+        'chan-avg_RA_ICU_=55_AUB',
+        'chan-avg_RA_ICU_=55_TUB',
+        'chan-avg_RA_ICU_=50_AUB',
+        'chan-avg_RA_ICU_=50_TUB',
     ]
 
 #CSV_FIELDNAMES.sort()
@@ -107,8 +137,6 @@ def analyze_file_and_channel_after_start_with_baseline(
 
     # here's another way of looking at it
     # this assert is true algebraicly
-    #print( (number_of_traps * baseline - sum_of_traps)  * INTERVAL_LENGTH,
-    #       area_under_baseline )
     assert( round(
             (number_of_traps * baseline - sum_of_traps)  * INTERVAL_LENGTH, 5)
             == round(area_under_baseline, 5) )
@@ -124,10 +152,11 @@ FILE_AND_BASELINE_TYPE_TO_START_TABLE = {
     }
 
 def analyse_combo(baseline, baseline_type, channel, filename,
-                  special_baseline_suffix=''):
+                  special_baseline_suffix='', start=False):
     file_type = 'OR' if 'OR' in filename else 'ICU'
     assert( file_type in filename )
-    start = FILE_AND_BASELINE_TYPE_TO_START_TABLE[file_type][baseline_type]
+    if not start:
+        start = FILE_AND_BASELINE_TYPE_TO_START_TABLE[file_type][baseline_type]
 
     time_under_baseline, area_under_baseline = (
         analyze_file_and_channel_after_start_with_baseline(
@@ -165,16 +194,27 @@ def analyse_subject(i, output_csv):
         }
 
     for filename in (or_file, icu_file):
-        for baseline, baseline_type, channel in (
-            (ra_chan1_baseline, 'RA', 1),
-            (ra_chan2_baseline, 'RA', 2),
-            (ra_both_chan_baseline, 'RA', 'avg'),
-            (o2_chan1_baseline, 'O2', 1),
-            (o2_chan2_baseline, 'O2', 2),
-            (o2_both_chan_baseline, 'O2', 'avg'),
+        for baseline, baseline_type, channel, suffix in (
+            (ra_chan1_baseline, 'RA', 1, ''),
+            (ra_chan2_baseline, 'RA', 2, ''),
+            (ra_both_chan_baseline, 'RA', 'avg', ''),
+            (o2_chan1_baseline, 'O2', 1, ''),
+            (o2_chan2_baseline, 'O2', 2, ''),
+            (o2_both_chan_baseline, 'O2', 'avg', ''),
+
+            # adjusted averages
+            (ra_both_chan_baseline * Decimal('0.9'), 'RA', 'avg', '_<10'),
+            (ra_both_chan_baseline * Decimal('0.85'), 'RA', 'avg', '_<15'),
+            (ra_both_chan_baseline * Decimal('0.8'), 'RA', 'avg', '_<20'),
+
+            # absolute baselines
+            (Decimal('60'), 'RA', 'avg', '_=60'),
+            (Decimal('55'), 'RA', 'avg', '_=55'),
+            (Decimal('50'), 'RA', 'avg', '_=50'),            
             ):
             results_dict.update(
-                analyse_combo(baseline, baseline_type, channel, filename ) )
+                analyse_combo(baseline, baseline_type,
+                              channel, filename, suffix) )
             
     # round all results to 3 decimal places
     for key in results_dict:
