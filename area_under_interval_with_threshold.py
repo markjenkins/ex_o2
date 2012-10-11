@@ -62,20 +62,18 @@ def gen_avg_pair_stream(iterable):
         if (None, None) != pair )
         
 
-def baseline_integrate_all_chan_and_avg_after_time(
+def baseline_integrate_avg_of_chans_after_time(
     filename, baseline, start):
-    channel_integrations = tuple(
-        baseline_integrate(
-            ( points[i]
-              for points in gen_points_after_interval(filename, start) ),
-            baseline )
-        for i in range(2)
-        )
-    avg_integration = baseline_integrate(
+    return baseline_integrate(
         gen_avg_pair_stream(gen_points_after_interval(filename, start)),
         baseline )
-    return channel_integrations[0], channel_integrations[1], avg_integration
 
+def baseline_integrate_chan_after_time(
+    filename, baseline, start, channel):
+    return baseline_integrate( 
+        ( points[channel]
+          for points in gen_points_after_interval(filename, start) ),
+        baseline ) # baseline_integrate
 
 
 
