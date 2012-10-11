@@ -25,5 +25,4 @@ def ave_over_interval(filename, start_row, end_row):
         for i in range(1+1) )
     return( chan1_ave, chan2_ave, average( (chan1_ave, chan2_ave) ) )
 
-filename, start_row, end_row = argv[1], int(argv[2]), int(argv[3])
-print(ave_over_interval(filename, start_row, end_row) )
+
