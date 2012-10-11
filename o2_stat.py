@@ -36,8 +36,9 @@ def gen_points_after_interval(filename, start):
 
 def gen_points_over_interval(filename, start, end):
     return ( points
-             for i, points in enumerate(
-            gen_points_after_interval(filename, start), 1)
-             if i<=end )
+             for i, points in enumerate(gen_o2_stats_from_file(filename), 1)
+             if i>=start and i<=end )
+
+
 
 
