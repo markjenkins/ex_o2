@@ -70,8 +70,9 @@ def baseline_integrate_avg_of_chans_after_time(
 
 def baseline_integrate_chan_after_time(
     filename, baseline, start, channel):
+    # channel is assumed to be 1 or 2, adjust to 0 index
     return baseline_integrate( 
-        ( points[channel]
+        ( points[channel-1]
           for points in gen_points_after_interval(filename, start) ),
         baseline ) # baseline_integrate
 
