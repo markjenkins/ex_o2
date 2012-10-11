@@ -228,8 +228,6 @@ def main():
     with open(output_file_path, 'w') as f:
         results_csv = DictWriter(f, CSV_FIELDNAMES)
         results_csv.writeheader()
-        #results_csv.writerow(
-        #    dict( (key, key) for key in CSV_FIELDNAMES  ) )
         for i in range(FIRST_SUBJECT, LAST_SUBJECT+1):
             analyse_subject(i, results_csv)
 
