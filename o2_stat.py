@@ -16,14 +16,18 @@ from decimal import Decimal
 def gen_o2_stats_from_file(filename):
     with open(filename) as f:
         d = DictReader(f, )
+        fieldnames_maps = dict(
+            (fieldname.strip(), fieldname)
+            for fieldname in d.fieldnames
+            )
         for line in d:
             try:
-                one = Decimal( int(line[' Ch1rSO2']) )
+                one = Decimal( int(line[fieldnames_maps['Ch1rSO2'] ]) )
             except ValueError:
                 one = None
 
             try:
-                two = Decimal( int(line[' Ch2rSO2']) )
+                two = Decimal( int(line[fieldnames_maps['Ch2rSO2']]) )
             except ValueError:
                 two = None
 

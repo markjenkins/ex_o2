@@ -118,10 +118,7 @@ CSV_FIELDNAMES = [
 #exit(0)
 
 FIRST_SUBJECT = 3
-LAST_SUBJECT = 3
-
-#FIRST_SUBJECT = 3
-#LAST_SUBJECT = 100
+LAST_SUBJECT = 100
 
 def analyze_file_and_channel_after_start_with_baseline(
     filename, baseline, start, channel):
@@ -254,7 +251,11 @@ def main():
     with open(output_file_path, 'w') as f:
         results_csv = DictWriter(f, CSV_FIELDNAMES)
         results_csv.writeheader()
-        for i in range(FIRST_SUBJECT, LAST_SUBJECT+1):
+
+        first_subject = FIRST_SUBJECT if len(argv) < 4 else int(argv[2])
+        last_subject = LAST_SUBJECT if len(argv) < 4 else int(argv[3])
+
+        for i in range(first_subject, last_subject+1):
             analyse_subject(i, results_csv)
 
 if __name__ == "__main__":
