@@ -30,11 +30,13 @@ SECONDS_PER_INTERVAL = 4
 # convert to int because python3 converts to float on division now
 INTERVALS_PER_MINUTE = int(SECONDS_PER_MINUTE / SECONDS_PER_INTERVAL)
 
-ROOM_AIR_START = INTERVALS_PER_MINUTE * 1
-ROOM_AIR_END = INTERVALS_PER_MINUTE*2 - 1
+ROOM_AIR_START = 1
+ROOM_AIR_END = ROOM_AIR_START + INTERVALS_PER_MINUTE  # 15
 
-O2_START = INTERVALS_PER_MINUTE * 2
-O2_END = INTERVALS_PER_MINUTE * 3 - 1
+O2_START = INTERVALS_PER_MINUTE * 3  + 1 # 46
+O2_END = O2_START + INTERVALS_PER_MINUTE  # 60
+
+
 
  # 4/60 = 0.0666.. minutes
 INTERVAL_LENGTH = Decimal(SECONDS_PER_INTERVAL) / Decimal(SECONDS_PER_MINUTE)
@@ -142,8 +144,8 @@ def analyze_file_and_channel_after_start_with_baseline(
     # here's another way of looking at it
     # this assert is true algebraicly
     assert( round(
-            (number_of_traps * baseline - sum_of_traps)  * INTERVAL_LENGTH, 5)
-            == round(area_under_baseline, 5) )
+            (number_of_traps * baseline - sum_of_traps)  * INTERVAL_LENGTH, 10)
+            == round(area_under_baseline, 10) )
 
     return ( time_under_baseline, area_under_baseline )
 
