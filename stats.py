@@ -1,4 +1,4 @@
-# Copyright Ben Arenson
+# Copyright St Boniface Hospital
 # @author Mark Jenkins <mark@parit.ca>
 #
 # Copying and distribution of this file, with or without modification,
